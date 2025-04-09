@@ -1,6 +1,6 @@
-import { logger } from '@/modules/logger';
-import { BaseEvent } from '@/types/event';
 import { Events, Interaction } from 'discord.js';
+import { logger } from '../modules/logger';
+import { BaseEvent } from '../types/event';
 
 /**
  * Event handler for Discord interaction create events

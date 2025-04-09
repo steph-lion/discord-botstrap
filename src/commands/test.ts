@@ -1,5 +1,5 @@
-import { BaseCommand } from '@/types/command';
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { BaseCommand } from '../types/command';
 
 /**
  * Simple ping command to check bot latency
