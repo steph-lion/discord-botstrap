@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    /* Projects */
+    "incremental": true /* Enables incremental compilation */,
+
+    /* Language and Environment */
+    "target": "es2022" /* Set the JavaScript language version for emitted JavaScript */,
+    "lib": ["es2022"] /* Libraries to include in the compilation */,
+
+    /* Modules */
+    "module": "commonjs" /* Specify the module format for generated code */,
+    "rootDir": "./src" /* Root folder for source files */,
+    "moduleResolution": "node" /* How TypeScript looks up modules */,
+    "baseUrl": "./" /* Base directory to resolve non-relative module names */,
+    "paths": {
+      /* Custom import paths */ "@/*": ["src/*"]
+    },
+    "resolveJsonModule": true /* Allows importing JSON files */,
+
+    /* Emit */
+    "outDir": "./dist" /* Output folder for compiled files */,
+    "sourceMap": true /* Creates source maps for debugging */,
+    "importHelpers": true /* Use helpers from tslib */,
+
+    /* Type Checking */
+    "strict": true /* Enable all strict type-checking options */,
+    "noImplicitAny": true /* Raise error on expressions and declarations with implied 'any' type */,
+    "strictNullChecks": true /* Check for null and undefined */,
+    "noImplicitThis": true /* Raise error on 'this' with implied 'any' type */,
+    "useUnknownInCatchVariables": true /* Use 'unknown' instead of 'any' in catch clauses */,
+    "noUnusedLocals": true /* Error on unused local variables */,
+    "noUnusedParameters": true /* Error on unused parameters */,
+    "noImplicitReturns": true /* Error on code paths that don't return */,
+    "noFallthroughCasesInSwitch": true /* Error on fallthrough cases in switch statements */,
+
+    /* Interoperability */
+    "esModuleInterop": true /* Support for importing CommonJS modules */,
+    "forceConsistentCasingInFileNames": true /* Ensure consistent casing in file names */,
+
+    /* Advanced */
+    "skipLibCheck": true /* Skip type checking of declaration files */
+  },
+  "include": ["src/**/*"] /* Files to include in compilation */,
+  "exclude": ["node_modules", "dist"] /* Files to exclude from compilation */
+}
