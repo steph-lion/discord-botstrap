@@ -1,0 +1,14 @@
+services:
+  botstrap:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: botstrap
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./logs:/app/logs
+    tty: true
