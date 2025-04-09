@@ -11,10 +11,6 @@
     "module": "commonjs" /* Specify the module format for generated code */,
     "rootDir": "./src" /* Root folder for source files */,
     "moduleResolution": "node" /* How TypeScript looks up modules */,
-    "baseUrl": "./" /* Base directory to resolve non-relative module names */,
-    "paths": {
-      /* Custom import paths */ "@/*": ["src/*"]
-    },
     "resolveJsonModule": true /* Allows importing JSON files */,
 
     /* Emit */
