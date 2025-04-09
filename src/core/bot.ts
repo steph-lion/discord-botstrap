@@ -196,8 +196,6 @@ export class Bot {
           } else {
             this.client.on(event.name, (...args) => event.execute(...args));
           }
-
-          logger.trace(`Registered event: ${event.name}`);
         } catch (importError: unknown) {
           if (importError instanceof Error) {
             logger.error(
