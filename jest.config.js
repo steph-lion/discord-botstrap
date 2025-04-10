@@ -2,8 +2,7 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   testEnvironment: "node",
-  transform: {
-    "^.+\\.tsx?$": ["ts-jest", {}],
-  },
-  testMatch: ["**/__tests__/**/*.ts", "**/*.test.ts"]
+  preset: "ts-jest",
+  testMatch: ["**/*.test.ts"],
+  testPathIgnorePatterns: ["/node_modules/"],
 };

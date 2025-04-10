@@ -1,11 +1,11 @@
 {
   "name": "discord-botstrap",
-  "version": "1.0.0",
-  "description": "Progetto TypeScript con Node.js",
+  "version": "0.1.0",
+  "description": "This is a full Typescript template for creating a Discord bot. The codebase uses the common and best practices for linting, formatting and design patterns.",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w",
     "lint": "eslint . --ext .ts",
