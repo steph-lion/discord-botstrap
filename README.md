@@ -1,5 +1,10 @@
 # Discord Botstrap
 
+![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg)
+![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg)
+![Lint Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg?event=lint)
+![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js)
+
 **discord-botstrap** is a TypeScript project designed to serve as a launchpad for a customizable and scalable bot. It removes all scaffolding concerns and implements best coding practices.
 
 ## Key Features
@@ -20,7 +25,7 @@
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/steph-lion/discord-botstrap.git
    cd discord-botstrap
    ```
 
