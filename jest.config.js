@@ -5,6 +5,5 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": ["ts-jest", {}],
   },
-  // Only run test files that match this pattern
-  testMatch: ["**/*.test.ts"],
+  testMatch: ["**/__tests__/**/*.ts", "**/*.test.ts"]
 };
