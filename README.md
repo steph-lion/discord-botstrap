@@ -3,7 +3,7 @@
 ![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg)
 ![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg)
 ![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js)
-![Node.js Version](https://img.shields.io/github/package-json/engines/node/steph-lion/discord-botstrap)
+![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=nodedotjs)
 
 **discord-botstrap** is a TypeScript project designed to serve as a launchpad for a customizable and scalable bot. It removes all scaffolding concerns and implements best coding practices.
 
