@@ -25,11 +25,11 @@ const validateEnv = (): z.infer<typeof envSchema> => {
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      logger.error('Invalid environment variables:', JSON.stringify(error.format(), null, 2));
+      logger.error(`Invalid environment variables: ${error.message}`);
       process.exit(1);
     }
-    logger.error('Unknown error during environment validation');
-    throw error;
+    logger.error(`Unknown error during environment validation: ${error}`);
+    process.exit(1);
   }
 };
 
