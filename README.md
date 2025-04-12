@@ -2,10 +2,11 @@
 
 ![Botstrap Logo](.github/images/botstrap.png)
 
-![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg)
-![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg)
-![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js)
-![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=nodedotjs)
+<div align="center">
+
+![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg) ![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg) ![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js) ![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=nodedotjs)
+
+</div>
 
 **discord-botstrap** is a TypeScript template project designed to serve as a launchpad for a customizable and scalable bot. It removes all scaffolding concerns and implements best coding practices. It contains a modular structure for commands and events, making it easy to add new features and maintain the codebase.
 This template is built on top of [discord.js](https://discord.js.org/) and uses TypeScript for type safety and better development experience. It also includes ESLint and Prettier for code quality and formatting.
