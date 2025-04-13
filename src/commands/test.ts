@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { BaseCommand } from '../types/command';
 
 /**
- * Simple ping command to check bot latency
+ * Simple test command to check bot status
  */
 export default class TestCommand extends BaseCommand {
   constructor() {

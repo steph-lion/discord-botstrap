@@ -1,4 +1,4 @@
-import { Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { ActivityType, Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { env } from '../modules/environment';
@@ -66,6 +66,29 @@ export class Bot {
       // Login the client
       await this.client.login(env.DISCORD_TOKEN);
 
+      // Set the bot's presence to say how many members are in the server
+      const guild = this.client.guilds.cache.get(env.DISCORD_GUILD_ID);
+      if (guild) {
+        try {
+          const members = await guild.members.fetch(); // Fetch all members the first time, otherwise it will give undefined. Usually a database is used to store this data
+          const humanCount = members.filter((member) => !member.user.bot).size; // Exclude bots
+          this.client.user?.setPresence({
+            status: 'online',
+            activities: [
+              {
+                type: ActivityType.Custom,
+                name: `There are ${humanCount} members here!`,
+              },
+            ],
+          });
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            logger.error(`Failed to fetch members: ${error.message}`);
+          } else {
+            logger.error('Unknown error while fetching members');
+          }
+        }
+      }
       logger.info(`Bot (${this.client.user?.tag}) is up and running!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
