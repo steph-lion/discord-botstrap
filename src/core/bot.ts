@@ -1,4 +1,4 @@
-import { Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { ActivityType, Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { env } from '../modules/environment';
@@ -66,6 +66,8 @@ export class Bot {
       // Login the client
       await this.client.login(env.DISCORD_TOKEN);
 
+      // Set the bot's presence to say how many members are in the server
+      await this.refreshMembersCount();
       logger.info(`Bot (${this.client.user?.tag}) is up and running!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -218,6 +220,34 @@ export class Bot {
         logger.error('Unknown error registering events');
       }
       throw error; // Rethrow to be caught by the main init function
+    }
+  }
+  /**
+   * Refresh members count
+   */
+  public async refreshMembersCount(): Promise<void> {
+    try {
+      const guild = this.client.guilds.cache.get(env.DISCORD_GUILD_ID);
+      if (guild) {
+        logger.debug(`Refreshing members count for guild: ${guild.name}`);
+        const members = await guild.members.fetch();
+        const humanCount = members.size;
+        this.client.user?.setPresence({
+          status: 'online',
+          activities: [
+            {
+              type: ActivityType.Custom,
+              name: `There are ${humanCount} members here!`,
+            },
+          ],
+        });
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        logger.error(`Failed to refresh members count: ${error.message}`);
+      } else {
+        logger.error('Unknown error while refreshing members count');
+      }
     }
   }
 }
