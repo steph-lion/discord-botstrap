@@ -3,31 +3,33 @@ import { logger } from '../modules/logger';
 import { BaseCommand } from '../types/command';
 
 /**
- * Simple test command to check bot status.
+ * Example command demonstrating cooldown handling.
  */
-export default class TestCommand extends BaseCommand {
+export default class PingCommand extends BaseCommand {
   constructor() {
     const data = new SlashCommandBuilder()
-      .setName('test')
-      .setDescription('Test command to check bot status');
+      .setName('ping')
+      .setDescription('Replies with Pong');
 
     super(data, {
       category: 'Utility',
-      longDescription: 'Replies with a quick status message to confirm the bot is online',
+      longDescription: 'Simple latency check with a 3 second per-user cooldown',
+      cooldown: 3,
     });
   }
 
   public async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     try {
+      const latency = Date.now() - interaction.createdTimestamp;
       await interaction.reply({
-        content: 'Bot is up and running. Try `/help` to see available commands.',
+        content: `Pong! (${latency}ms)`,
         flags: MessageFlags.Ephemeral,
       });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        logger.error(error, `Error executing test command: ${error.message}`);
+        logger.error(error, `Error executing ping command: ${error.message}`);
       } else {
-        logger.error('Unknown error executing test command');
+        logger.error('Unknown error executing ping command');
       }
     }
   }
