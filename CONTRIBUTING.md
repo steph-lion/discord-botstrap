@@ -1,6 +1,6 @@
 # Contributing to Discord Botstrap
 
-Thank you for your interest in contributing to **Discord-Botstrap**! This document outlines the guidelines for contributing to the project.
+Thank you for your interest in contributing to **discord-botstrap**! This document outlines the guidelines for contributing to the project.
 
 ---
 
@@ -22,44 +22,53 @@ Thank you for your interest in contributing to **Discord-Botstrap**! This docume
 3. **Make your changes**
 
    - Ensure your changes are relevant and follow the project's scope.
-   - Test your changes locally before submitting a pull request (PR).
+   - Test your changes locally before submitting a pull request (PR):
+     ```bash
+     pnpm lint && pnpm typecheck && pnpm test && pnpm build
+     ```
 
 4. **Open a Pull Request (PR)**
    - Submit your PR to the `master` branch of this repository.
-   - The PR title must start with one of the following keywords: `Add`, `Fix`, `Refactor`, etc.
+   - Use a PR title that matches [Conventional Commits](#commit-guidelines).
    - Ensure your PR passes all GitHub Actions checks and is approved by the repository owner.
 
 ---
 
 ## Commit Guidelines
 
-To maintain a clean and readable commit history, follow these conventions:
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
-- Use the format:
+```
+type(scope): imperative summary
 
-  ```
-  <type>: <Description starts with a capital letter>
-  ```
+Optional body explaining why.
+```
 
-  Examples:
+### Types
 
-  - `feat: Add new /ping command`
-  - `fix: Resolve issue with guildMemberAdd event`
-  - `refactor: Simplify bot initialization logic`
-  - `chore: Update dependencies`
+| Type | When |
+|------|------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `refactor` | Behavior-preserving restructure |
+| `chore` | Tooling, deps, config |
+| `test` | Tests only |
+| `docs` | Documentation only |
+| `ci` | CI/CD only |
 
-- **Accepted types:**
-  - `feat`: For new features.
-  - `fix`: For bug fixes.
-  - `refactor`: For code changes that neither fix a bug nor add a feature.
-  - `chore`: For maintenance tasks (e.g., dependency updates, configuration changes).
+### Examples
+
+- `feat(commands): add moderation kick command`
+- `fix(events): correct guild member remove log message`
+- `chore(deps): upgrade discord.js`
+- `docs: clarify deploy commands workflow`
 
 ---
 
 ## Pull Request Guidelines
 
-- The PR title must start with one of the following keywords: `Add`, `Fix`, `Refactor`, etc.
-- The PR must pass all GitHub Actions checks (e.g., linting, tests).
+- PR titles should follow the same `type(scope): summary` format as commits.
+- The PR must pass all GitHub Actions checks (lint, typecheck, tests, build).
 - The PR must be approved by the repository owner before being merged.
 
 ---

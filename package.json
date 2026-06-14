@@ -1,6 +1,6 @@
 {
   "name": "discord-botstrap",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "This is a full Typescript template for creating a Discord bot. The codebase uses the common and best practices for linting, formatting and design patterns.",
   "main": "dist/index.js",
   "scripts": {
@@ -17,8 +17,8 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["discord", "discord.js", "bot", "typescript", "template"],
+  "author": "Stefano Leone",
   "license": "MIT",
   "engines": {
     "node": ">=22.12.0"
