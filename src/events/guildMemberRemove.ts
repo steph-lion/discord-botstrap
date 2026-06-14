@@ -50,9 +50,9 @@ export default class GuildMemberRemoveEvent extends BaseEvent<typeof Events.Guil
       Bot.getInstance().refreshMembersCount();
     } catch (error: unknown) {
       if (error instanceof Error) {
-        logger.error(`Error welcoming new member ${member.user.username}: ${error.message}`);
+        logger.error(`Error sending farewell for member ${member.user.username}: ${error.message}`);
       } else {
-        logger.error(`Unknown error welcoming new member ${member.user.username}`);
+        logger.error(`Unknown error sending farewell for member ${member.user.username}`);
       }
     }
   }
