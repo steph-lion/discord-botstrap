@@ -1,4 +1,5 @@
-import { Events, Interaction } from 'discord.js';
+import { Events, Interaction, MessageFlags } from 'discord.js';
+import { getCooldownRemaining, setCooldown } from '../modules/commands/cooldowns';
 import { logger } from '../modules/logger';
 import { BaseEvent } from '../types/event';
 
@@ -7,7 +8,6 @@ import { BaseEvent } from '../types/event';
  */
 export default class InteractionCreateEvent extends BaseEvent<typeof Events.InteractionCreate> {
   constructor() {
-    // Initialize with event name and once=false since we want to handle all interactions
     super(Events.InteractionCreate, false);
   }
 
@@ -17,58 +17,82 @@ export default class InteractionCreateEvent extends BaseEvent<typeof Events.Inte
    */
   public async execute(interaction: Interaction): Promise<void> {
     try {
-      // Handle only chat input commands (slash commands)
       if (!interaction.isChatInputCommand()) return;
 
       const commandName = interaction.commandName;
-
-      // Get the command from the client's commands collection
       const command = interaction.client.commands.get(commandName);
 
-      // Check if command exists
       if (!command) {
         logger.warn(`Command ${commandName} not found`);
         await interaction.reply({
           content: 'This command does not exist.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      // Check if command is disabled
       if (command.disabled) {
         await interaction.reply({
           content: 'This command is currently disabled.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
-      // Execute the command
+      if (command.ownerOnly) {
+        const ownerId = interaction.guild?.ownerId;
+        if (!ownerId || interaction.user.id !== ownerId) {
+          await interaction.reply({
+            content: 'Only the server owner can use this command.',
+            flags: MessageFlags.Ephemeral,
+          });
+          return;
+        }
+      }
+
+      if (command.cooldown) {
+        const cooldownKey = `${interaction.user.id}:${command.data.name}`;
+        const remainingSeconds = getCooldownRemaining(cooldownKey);
+
+        if (remainingSeconds !== null) {
+          await interaction.reply({
+            content: `Please wait ${remainingSeconds}s before using /${command.data.name} again.`,
+            flags: MessageFlags.Ephemeral,
+          });
+          return;
+        }
+
+        setCooldown(cooldownKey, command.cooldown);
+      }
+
       await command.execute(interaction);
       logger.trace(`Command (/${commandName}) executed by ${interaction.user.id}`);
     } catch (error: unknown) {
-      // Handle errors during command execution
       if (error instanceof Error) {
         logger.error(`Error executing command: ${error.message}`);
       } else {
         logger.error('Unknown error executing command');
       }
-      // Reply to the user with an error message
+
       try {
         const errorMessage =
           'An error occurred while executing the command. Please try again later.';
         if (interaction.isChatInputCommand()) {
           if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: errorMessage, ephemeral: true });
+            await interaction.followUp({
+              content: errorMessage,
+              flags: MessageFlags.Ephemeral,
+            });
           } else {
-            await interaction.reply({ content: errorMessage, ephemeral: true });
+            await interaction.reply({
+              content: errorMessage,
+              flags: MessageFlags.Ephemeral,
+            });
           }
         }
       } catch (replyError: unknown) {
-        // If we can't reply to the interaction, log the error
         if (replyError instanceof Error) {
-          logger.error(`Could not reply to interaction:`, replyError);
+          logger.error(replyError, 'Could not reply to interaction');
         }
       }
     }
