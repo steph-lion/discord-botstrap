@@ -4,122 +4,121 @@
 
 <div align="center">
 
-![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg) ![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg) ![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js) ![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=nodedotjs)
+![Build Status](https://github.com/steph-lion/discord-botstrap/actions/workflows/ci.yml/badge.svg) ![Test Coverage](https://codecov.io/gh/steph-lion/discord-botstrap/branch/master/graph/badge.svg) ![Discord.js Version](https://img.shields.io/npm/v/discord.js?label=discord.js) ![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D22.12-339933?logo=nodedotjs)
 
 </div>
 
-**discord-botstrap** is a TypeScript template project designed to serve as a launchpad for a customizable and scalable bot. It removes all scaffolding concerns and implements best coding practices. It contains a modular structure for commands and events, making it easy to add new features and maintain the codebase.
-This template is built on top of [discord.js](https://discord.js.org/) and uses TypeScript for type safety and better development experience. It also includes ESLint and Prettier for code quality and formatting.
+**discord-botstrap** is a TypeScript template for building a [discord.js](https://discord.js.org/) bot with a modular command/event architecture, strict environment validation, structured logging, tests, Docker, and CI.
 
 ## Key Features
 
-- **TypeScript**: Advanced typing for more robust code.
-- **ESLint and Prettier**: Ensures consistent and high-quality code style.
-- **Docker Support**: Easy and portable execution via Docker containers.
-- **Testing**: Includes unit tests with [Jest](https://jestjs.io/) for reliable code.
-- **GitHub Actions**: Automated workflows for linting, testing, and building to ensure code quality and reliability for each PR and commit.
+- **discord.js 14** with slash commands, embeds, and REST-based command deployment
+- **TypeScript 6** with strict typing
+- **Zod** for environment validation
+- **Pino** structured logging (pretty in dev, JSON in production)
+- **tsx** for fast local development
+- **Vitest** unit tests and **GitHub Actions** CI
+- **Docker** support for production runs
 
 ## Requirements
 
-- Node.js >= 18
-- pnpm (Package Manager)
-- Docker (optional, for containerized execution)
+- Node.js **>= 22.12.0** (required by discord.js 14.26+)
+- [pnpm](https://pnpm.io/)
+- Docker (optional)
 
-## Installation
+> **Discord API note (Feb 2026):** permissions such as `PIN_MESSAGES`, `CREATE_GUILD_EXPRESSIONS`, and `CREATE_EVENTS` were split from broader permissions. This template does not use those features by default.
 
-1. Clone the repository:
+## Quick start
+
+1. **Use this template** on GitHub or clone the repository:
 
    ```bash
    git clone https://github.com/steph-lion/discord-botstrap.git
    cd discord-botstrap
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
 
    ```bash
    pnpm install
    ```
 
-3. Configure environment variables:
-   Create a `.env` file in the root of the project and add the following variables:
-   ```env
-   DISCORD_TOKEN=<your_discord_token>
-   DISCORD_CLIENT_ID=<your_client_id>
-   DISCORD_GUILD_ID=<your_guild_id>
-   ```
-
-## Running Locally
-
-1. Build the project:
+3. **Configure environment:**
 
    ```bash
-   pnpm build
+   cp .env.example .env
    ```
 
-2. Start the bot:
+   Fill in `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `DISCORD_GUILD_ID`.
+
+4. **Set up Discord** (intents, invite URL, scopes): see [docs/DISCORD_SETUP.md](./docs/DISCORD_SETUP.md).
+
+5. **Deploy slash commands** (run when command definitions change):
 
    ```bash
-   pnpm start
+   pnpm deploy:commands
    ```
 
-3. For development, use the command:
+   For production-wide commands: `pnpm deploy:commands:global`
+
+6. **Run the bot:**
+
    ```bash
    pnpm dev
    ```
 
+   Production:
+
+   ```bash
+   pnpm build
+   pnpm start
+   ```
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start bot with hot reload (`tsx watch`) |
+| `pnpm build` | Compile TypeScript to `dist/` |
+| `pnpm start` | Run compiled bot |
+| `pnpm deploy:commands` | Register guild slash commands (instant) |
+| `pnpm deploy:commands:global` | Register global slash commands |
+| `pnpm typecheck` | Type-check without emitting files |
+| `pnpm lint` | Run ESLint |
+| `pnpm test` | Run Vitest tests |
+| `pnpm test:watch` | Run Vitest in watch mode |
+| `pnpm format` | Format with Prettier |
+
+## Adding features
+
+See [docs/ADDING_COMMANDS.md](./docs/ADDING_COMMANDS.md) for how to add commands, events, cooldowns, and owner-only restrictions.
+
 ## Running with Docker
 
-1. Build the Docker image:
+```bash
+docker compose build
+docker compose up
+```
 
-   ```bash
-   docker-compose build
-   ```
+Deploy commands before or after the first container start:
 
-2. Start the container:
+```bash
+pnpm deploy:commands
+```
 
-   ```bash
-   docker-compose up
-   ```
+The container runs with `NODE_ENV=production` and emits JSON logs to stdout.
 
-3. To stop the container:
-   ```bash
-   docker-compose down
-   ```
+## Linting and formatting
 
-## Linting and Formatting
-
-This project uses **ESLint** and **Prettier** to maintain consistent code style:
-
-- To lint the code with ESLint:
-
-  ```bash
-  pnpm lint
-  ```
-
-- To format the code with Prettier:
-  ```bash
-  pnpm format
-  ```
+```bash
+pnpm lint
+pnpm format
+```
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Make your changes and commit them:
-   ```bash
-   git commit -m "Add your message here"
-   ```
-4. Push your branch:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. Open a pull request and describe your changes.
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
+MIT — see [LICENSE](./LICENSE).
