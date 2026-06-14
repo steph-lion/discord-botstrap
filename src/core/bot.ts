@@ -1,6 +1,7 @@
-import { ActivityType, Client, Collection, GatewayIntentBits, REST, Routes } from 'discord.js';
+import { ActivityType, Client, Collection, GatewayIntentBits } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
+import { loadCommandModules } from '../modules/commands/load-commands';
 import { env } from '../modules/environment';
 import { logger } from '../modules/logger';
 import { waitForInternetConnection } from '../modules/utils/network';
@@ -22,18 +23,11 @@ export class Bot {
   public readonly client: Client;
 
   private constructor() {
-    // Initialize client with all necessary intents
+    // Guilds is required; GuildMembers is privileged and needed for member events/count
     this.client = new Client({
-      intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildScheduledEvents,
-        GatewayIntentBits.GuildMembers,
-      ],
+      intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
     });
 
-    // Create a collection for commands
     this.client.commands = new Collection<string, Command>();
   }
 
@@ -54,24 +48,18 @@ export class Bot {
     try {
       logger.info('Initializing bot...');
 
-      // Wait for internet connection before proceeding
       await waitForInternetConnection();
 
-      // Register commands
-      await this.registerCommands();
-
-      // Register events
+      await this.loadCommands();
       await this.registerEvents();
 
-      // Login the client
       await this.client.login(env.DISCORD_TOKEN);
 
-      // Set the bot's presence to say how many members are in the server
       await this.refreshMembersCount();
       logger.info(`Bot (${this.client.user?.tag}) is up and running!`);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        logger.error(`Error during initialization: ${error.message}`, error);
+        logger.error(error, `Error during initialization: ${error.message}`);
       } else {
         logger.error('Unknown error during initialization');
       }
@@ -80,82 +68,31 @@ export class Bot {
   }
 
   /**
-   * Register commands from the commands directory
+   * Load commands from disk into the in-memory command collection.
+   * Slash command definitions are deployed separately via `pnpm deploy:commands`.
    */
-  private async registerCommands(): Promise<void> {
+  private async loadCommands(): Promise<void> {
     try {
-      logger.debug('Registering commands...');
+      logger.debug('Loading commands...');
       const commandsPath = path.join(__dirname, '..', 'commands');
-      const commandFiles = fs
-        .readdirSync(commandsPath)
-        .filter(
-          (file) =>
-            (file.endsWith('.js') || file.endsWith('.ts')) &&
-            file !== 'index.js' &&
-            file !== 'index.ts'
-        );
-      const commands: Record<string, unknown>[] = [];
+      const commands = await loadCommandModules(commandsPath);
 
-      for (const file of commandFiles) {
-        const filePath = path.join(commandsPath, file);
-        try {
-          // Using dynamic import
-          const commandModule = await import(filePath);
-          const CommandClass = commandModule.default;
-
-          // Skip if the command module doesn't export a default class
-          if (!CommandClass || typeof CommandClass !== 'function') {
-            logger.warn(`Command at ${filePath} doesn't export a default class`);
-            continue;
-          }
-
-          // Instantiate the command class
-          const command = new CommandClass();
-
-          // Check if command is valid
-          if (!command.data || !command.execute) {
-            logger.warn(`Command at ${filePath} is missing required "data" or "execute" property`);
-            continue;
-          }
-
-          // Set the command in the collection
-          this.client.commands.set(command.data.name, command);
-          commands.push(command.data.toJSON());
-        } catch (importError: unknown) {
-          if (importError instanceof Error) {
-            logger.error(
-              `Error importing command at ${filePath}: ${importError.message}`,
-              importError
-            );
-          } else {
-            logger.error(`Unknown error importing command at ${filePath}`);
-          }
-        }
+      for (const command of commands) {
+        this.client.commands.set(command.data.name, command);
       }
 
-      // Deploy commands to Discord
       if (commands.length > 0) {
-        const rest = new REST().setToken(env.DISCORD_TOKEN);
-        await rest.put(
-          Routes.applicationGuildCommands(env.DISCORD_CLIENT_ID, env.DISCORD_GUILD_ID),
-          {
-            body: commands,
-          }
-        );
-
-        logger.debug(
-          `Successfully registered ${commands.length} command(s) from ${commands.length} file(s)!`
-        );
+        logger.debug(`Loaded ${commands.length} command(s) into memory`);
       } else {
-        logger.warn('No commands were registered');
+        logger.warn('No commands were loaded');
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
-        logger.error(`Error registering commands: ${error.message}`, error);
+        logger.error(error, `Error loading commands: ${error.message}`);
       } else {
-        logger.error('Unknown error registering commands');
+        logger.error('Unknown error loading commands');
       }
-      throw error; // Rethrow to be caught by the main init function
+      throw error;
     }
   }
 
@@ -173,26 +110,21 @@ export class Bot {
       for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
         try {
-          // Using dynamic import
           const eventModule = await import(filePath);
           const EventClass = eventModule.default;
 
-          // Skip if the event module doesn't export a default class
           if (!EventClass || typeof EventClass !== 'function') {
             logger.warn(`Event at ${filePath} doesn't export a default class`);
             continue;
           }
 
-          // Instantiate the event class
           const event = new EventClass();
 
-          // Skip if the event is not an instance of BaseEvent
           if (!(event instanceof BaseEvent)) {
             logger.warn(`Event at ${filePath} is not an instance of BaseEvent`);
             continue;
           }
 
-          // Register the event with the client
           if (event.once) {
             this.client.once(event.name, (...args) => event.execute(...args));
           } else {
@@ -201,8 +133,8 @@ export class Bot {
         } catch (importError: unknown) {
           if (importError instanceof Error) {
             logger.error(
-              `Error importing event at ${filePath}: ${importError.message}`,
-              importError
+              importError,
+              `Error importing event at ${filePath}: ${importError.message}`
             );
           } else {
             logger.error(`Unknown error importing event at ${filePath}`);
@@ -210,18 +142,17 @@ export class Bot {
         }
       }
 
-      logger.debug(
-        `Successfully registered ${eventFiles.length} event(s) from ${eventFiles.length} file(s)!`
-      );
+      logger.debug(`Registered ${eventFiles.length} event handler file(s)`);
     } catch (error: unknown) {
       if (error instanceof Error) {
-        logger.error(`Error registering events: ${error.message}`, error);
+        logger.error(error, `Error registering events: ${error.message}`);
       } else {
         logger.error('Unknown error registering events');
       }
-      throw error; // Rethrow to be caught by the main init function
+      throw error;
     }
   }
+
   /**
    * Refresh members count
    */
