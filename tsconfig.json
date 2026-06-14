@@ -8,9 +8,9 @@
     "lib": ["es2022"] /* Libraries to include in the compilation */,
 
     /* Modules */
-    "module": "commonjs" /* Specify the module format for generated code */,
+    "module": "Node16" /* Specify the module format for generated code */,
     "rootDir": "./src" /* Root folder for source files */,
-    "moduleResolution": "node" /* How TypeScript looks up modules */,
+    "moduleResolution": "Node16" /* How TypeScript looks up modules */,
     "resolveJsonModule": true /* Allows importing JSON files */,
 
     /* Emit */
@@ -34,8 +34,9 @@
     "forceConsistentCasingInFileNames": true /* Ensure consistent casing in file names */,
 
     /* Advanced */
-    "skipLibCheck": true /* Skip type checking of declaration files */
+    "skipLibCheck": true /* Skip type checking of declaration files */,
+    "types": ["node"]
   },
   "include": ["src/**/*"] /* Files to include in compilation */,
-  "exclude": ["node_modules", "dist"] /* Files to exclude from compilation */
+  "exclude": ["node_modules", "dist", "src/**/__tests__/**", "src/**/*.test.ts"]
 }
